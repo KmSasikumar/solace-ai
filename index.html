@@ -1,0 +1,1310 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Solace AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#eef3fa;
+    --bg-grad:linear-gradient(160deg,#e8f1fb 0%,#eef7f1 48%,#f3eefb 100%);
+    --surface:#ffffff;
+    --surface-2:#f4f7fc;
+    --surface-3:#eaf1f9;
+    --ink:#21314d;
+    --ink-soft:#3d4f6e;
+    --muted:#63738e;
+    --line:#dde6f0;
+    --blue:#5b93d6;
+    --blue-deep:#3f74b8;
+    --blue-soft:#dcebfb;
+    --green:#4fae83;
+    --green-soft:#dcf2e7;
+    --lav:#8b74c9;
+    --lav-soft:#e9e1f9;
+    --peach:#e8975a;
+    --peach-soft:#fbe9d8;
+    --rose:#d96a7e;
+    --rose-soft:#fbe3e7;
+    --shadow:0 10px 30px rgba(63,90,140,.10);
+    --shadow-sm:0 4px 14px rgba(63,90,140,.08);
+    --radius:20px;
+  }
+  [data-theme="dark"]{
+    --bg:#0f1521;
+    --bg-grad:linear-gradient(160deg,#131c2e 0%,#122019 48%,#1d1830 100%);
+    --surface:#1b2436;
+    --surface-2:#222e44;
+    --surface-3:#2a3852;
+    --ink:#e9eff9;
+    --ink-soft:#c6d2e4;
+    --muted:#93a5bf;
+    --line:#2e3d59;
+    --blue:#7fb0e8;
+    --blue-deep:#a9cbf3;
+    --blue-soft:#274263;
+    --green:#6fce9f;
+    --green-soft:#1e3a2d;
+    --lav:#b39ee6;
+    --lav-soft:#322a52;
+    --peach:#f0aa72;
+    --peach-soft:#453122;
+    --rose:#ef93a5;
+    --rose-soft:#452a32;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+    --shadow-sm:0 4px 14px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    margin:0;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
+    background:var(--bg-grad);background-attachment:fixed;
+    font-size:15.5px;line-height:1.55;
+  }
+  h1,h2,h3{font-family:'Poppins',sans-serif;margin:0;line-height:1.25;color:var(--ink)}
+  button{font-family:inherit;cursor:pointer}
+  input,textarea,select{font-family:inherit}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:8px}
+
+  /* ---------- App frame ---------- */
+  .phone{max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;position:relative}
+  @media(min-width:560px){
+    .phone{box-shadow:0 0 0 1px var(--line),0 24px 60px rgba(40,60,100,.14);background:transparent}
+  }
+  main{flex:1;padding:20px 18px 108px;width:100%}
+  .screen{display:none;animation:fadeIn .28s ease}
+  .screen.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.screen{animation:none}.breath-circle{transition:none!important}}
+
+  /* ---------- Top bar ---------- */
+  .topbar{display:flex;align-items:center;gap:10px;padding:16px 18px 2px}
+  .logo-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--lav));display:grid;place-items:center;color:#fff;flex:none}
+  .logo-mark svg{width:22px;height:22px}
+  .topbar .brand{font-family:'Poppins',sans-serif;font-weight:600;font-size:19px}
+  .topbar .brand span{color:var(--blue-deep)}
+  .topbar .spacer{flex:1}
+  .icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);display:grid;place-items:center;position:relative}
+  .icon-btn svg{width:20px;height:20px}
+  .dot-badge{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:50%;background:var(--rose);border:2px solid var(--surface)}
+
+  /* ---------- Cards & shared ---------- */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:18px}
+  .card + .card{margin-top:14px}
+  .stack{margin-top:14px}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .muted{color:var(--muted)}
+  .small{font-size:13px}
+  .row{display:flex;align-items:center;gap:12px}
+  .row.between{justify-content:space-between}
+  .grow{flex:1}
+  .btn{border:none;border-radius:14px;padding:12px 18px;font-weight:600;font-size:15px;background:var(--blue);color:#fff;transition:transform .12s ease,background .12s}
+  .btn:hover{background:var(--blue-deep)}
+  .btn:active{transform:scale(.97)}
+  .btn.ghost{background:var(--surface-3);color:var(--ink)}
+  .btn.ghost:hover{background:var(--line)}
+  .btn.green{background:var(--green)}
+  .btn.block{width:100%}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;background:var(--surface-3);border:1px solid var(--line);font-size:13.5px;font-weight:500;color:var(--ink-soft);transition:all .12s}
+  .chip:hover{border-color:var(--blue)}
+  .chip.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .toast{position:fixed;left:50%;bottom:104px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:999px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:all .25s ease;z-index:60;max-width:88vw;text-align:center;box-shadow:var(--shadow)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---------- Home ---------- */
+  .greet h1{font-size:26px;font-weight:600;margin-top:2px}
+  .greet p{margin:6px 0 0;color:var(--muted)}
+  .welcome-note{background:linear-gradient(120deg,var(--blue-soft),var(--lav-soft));border:none}
+  .welcome-note p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+  .faces{display:flex;justify-content:space-between;gap:4px;margin-top:14px}
+  .face{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 2px;border-radius:14px;font-size:11.5px;color:var(--muted);font-weight:500}
+  .face .emoji{font-size:30px;line-height:1;filter:grayscale(.25);transition:transform .15s}
+  .face:hover .emoji{transform:scale(1.15)}
+  .face.sel{background:var(--blue-soft);color:var(--ink)}
+  .face.sel .emoji{filter:none;transform:scale(1.18)}
+  .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .quick-tile{border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;font-weight:600;font-size:13.5px;color:var(--ink);box-shadow:var(--shadow-sm)}
+  .quick-tile .tile-ic{width:42px;height:42px;border-radius:13px;display:grid;place-items:center}
+  .quick-tile svg{width:22px;height:22px}
+  .tile-blue{background:var(--blue-soft);color:var(--blue-deep)}
+  .tile-green{background:var(--green-soft);color:var(--green)}
+  .tile-lav{background:var(--lav-soft);color:var(--lav)}
+  .list-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+  .list-item:last-child{border-bottom:none;padding-bottom:2px}
+  .list-item:first-of-type{padding-top:8px}
+  .li-ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none}
+  .li-ic svg{width:19px;height:19px}
+  .empty-note{padding:14px 4px 6px;color:var(--muted);font-size:14px}
+  .affirm{background:linear-gradient(120deg,var(--green-soft),var(--blue-soft));border:none;text-align:center;padding:22px 18px}
+  .affirm p{font-family:'Poppins',sans-serif;font-size:17px;margin:4px 0 0;color:var(--ink)}
+
+  /* ---------- Bottom nav ---------- */
+  .bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(7,1fr);padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:50}
+  .nav-btn{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--muted);padding:5px 0 3px;border-radius:12px}
+  .nav-btn svg{width:21px;height:21px}
+  .nav-btn.active{color:var(--blue-deep)}
+  .nav-btn.active svg{stroke-width:2.4}
+
+  /* ---------- Chat ---------- */
+  .chat-wrap{display:flex;flex-direction:column}
+  .chat-log{display:flex;flex-direction:column;gap:10px;padding:4px 0 14px}
+  .msg{max-width:84%;padding:11px 14px;border-radius:18px;font-size:15px;white-space:pre-wrap;word-wrap:break-word}
+  .msg.ai{background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:6px;align-self:flex-start;box-shadow:var(--shadow-sm)}
+  .msg.me{background:var(--blue);color:#fff;border-bottom-right-radius:6px;align-self:flex-end}
+  .msg .who{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.65;margin-bottom:3px}
+  .msg.crisis{background:var(--rose-soft);border:1px solid var(--rose);color:var(--ink);max-width:94%}
+  .msg.crisis a{color:var(--blue-deep);font-weight:600}
+  .msg .act-link{margin-top:9px;display:inline-block;background:var(--green);color:#fff;border:none;padding:8px 14px;border-radius:10px;font-weight:600;font-size:13.5px}
+  .typing{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:18px;border-bottom-left-radius:6px;padding:12px 16px;display:none;gap:5px}
+  .typing.show{display:flex}
+  .typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.1s infinite}
+  .typing i:nth-child(2){animation-delay:.18s}.typing i:nth-child(3){animation-delay:.36s}
+  @keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+  .prompt-row{display:flex;gap:8px;flex-wrap:wrap;padding:2px 0 12px}
+  .chat-input{position:sticky;bottom:96px;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:8px;display:flex;gap:8px;align-items:flex-end}
+  .chat-input textarea{flex:1;border:none;resize:none;background:transparent;color:var(--ink);font-size:15px;max-height:96px;padding:9px 6px}
+  .chat-input textarea:focus{outline:none}
+  .send-btn{width:42px;height:42px;border-radius:13px;border:none;background:var(--blue);color:#fff;display:grid;place-items:center;flex:none}
+  .send-btn svg{width:19px;height:19px}
+  .disclaimer{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+  /* ---------- Mood ---------- */
+  .mood-big{text-align:center;padding:6px 0 2px}
+  .mood-big .big-emoji{font-size:64px;line-height:1.1}
+  .mood-big .big-label{font-family:'Poppins',sans-serif;font-size:20px;font-weight:600}
+  input[type=range]{width:100%;appearance:none;-webkit-appearance:none;height:10px;border-radius:99px;background:linear-gradient(90deg,#e08a97,#f0b27a,#f2d06b,#9ed48a,#6fc7a5);margin:16px 0 6px}
+  input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:#fff;border:3px solid var(--blue);box-shadow:var(--shadow);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--blue);box-shadow:var(--shadow);cursor:pointer}
+  .scale-labels{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-weight:500}
+  .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  textarea.field, input.field, select.field{width:100%;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:14px;padding:12px 14px;font-size:15px}
+  textarea.field:focus, input.field:focus, select.field:focus{outline:none;border-color:var(--blue)}
+  label.flabel{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);margin:16px 0 7px}
+  label.flabel:first-child{margin-top:0}
+  .chart-box{width:100%}
+  .hist-score{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:19px;flex:none}
+  .seg{display:flex;background:var(--surface-3);border-radius:12px;padding:4px;gap:4px}
+  .seg button{flex:1;border:none;background:transparent;padding:8px;border-radius:9px;font-weight:600;font-size:13.5px;color:var(--muted)}
+  .seg button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-sm)}
+
+  /* ---------- Activities ---------- */
+  .act-card{display:flex;gap:14px;align-items:center;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm)}
+  .act-card + .act-card{margin-top:12px}
+  .act-card h3{font-size:16.5px}
+  .act-card p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+  .act-ic{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;flex:none}
+  .act-ic svg{width:25px;height:25px}
+  .player{display:none}
+  .player.open{display:block}
+  .breath-stage{display:flex;flex-direction:column;align-items:center;padding:10px 0 4px}
+  .breath-ring{position:relative;width:230px;height:230px;display:grid;place-items:center}
+  .breath-ring svg.ring{position:absolute;inset:0;transform:rotate(-90deg)}
+  .breath-circle{width:130px;height:130px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--blue-soft),var(--blue));display:grid;place-items:center;color:#fff;font-family:'Poppins',sans-serif;font-weight:600;font-size:17px;text-align:center;transition:transform 1s linear;box-shadow:0 14px 34px rgba(91,147,214,.35);padding:10px}
+  .breath-count{font-size:15px;color:var(--muted);margin-top:14px;font-weight:500}
+  .timer-big{font-family:'Poppins',sans-serif;font-size:52px;font-weight:600;text-align:center;margin:8px 0 2px;font-variant-numeric:tabular-nums}
+  .ground-step{display:none;text-align:center;padding:8px 0}
+  .ground-step.on{display:block}
+  .ground-step .g-num{font-size:56px}
+  .ground-dots{display:flex;gap:7px;justify-content:center;margin:14px 0}
+  .ground-dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+  .ground-dots i.on{background:var(--green)}
+
+  /* ---------- Insights ---------- */
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm)}
+  .stat .num{font-family:'Poppins',sans-serif;font-size:30px;font-weight:700;line-height:1.1}
+  .stat .lbl{font-size:12.5px;color:var(--muted);font-weight:500;margin-top:2px}
+  .bar-track{height:10px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin-top:8px}
+  .bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .5s ease}
+  .mile{display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+  .mile:last-child{border-bottom:none}
+  .mile .m-ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:18px}
+  .mile.locked{opacity:.55}
+  .rec{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+  .rec:last-child{border-bottom:none}
+
+  /* ---------- Settings / notifications ---------- */
+  .switch{width:50px;height:29px;border-radius:99px;background:var(--surface-3);border:1px solid var(--line);position:relative;flex:none;padding:0;transition:background .15s}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:left .15s}
+  .switch[aria-checked="true"]{background:var(--green);border-color:var(--green)}
+  .switch[aria-checked="true"]::after{left:24px}
+  .set-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .set-row:last-child{border-bottom:none}
+  .set-row h3{font-size:15.5px;font-weight:600;font-family:'Inter',sans-serif}
+  .set-row p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+  .avatar-lg{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--green));display:grid;place-items:center;color:#fff;font-family:'Poppins',sans-serif;font-size:30px;font-weight:700;margin:0 auto}
+  .notif-card{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+  .notif-card:last-child{border-bottom:none}
+  .danger{color:var(--rose)}
+  .btn.danger-btn{background:var(--rose-soft);color:var(--rose)}
+  dialog{border:1px solid var(--line);border-radius:20px;background:var(--surface);color:var(--ink);padding:22px;max-width:88vw;width:360px;box-shadow:var(--shadow)}
+  dialog::backdrop{background:rgba(20,30,50,.45)}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <header class="topbar">
+    <div class="logo-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21c-4.5-2.6-8-5.6-8-9.6C4 8 6.2 5.5 9 5.5c1.4 0 2.4.7 3 1.6.6-.9 1.6-1.6 3-1.6 2.8 0 5 2.5 5 5.9 0 4-3.5 7-8 9.6Z"/></svg>
+    </div>
+    <div class="brand">Solace <span>AI</span></div>
+    <div class="spacer"></div>
+    <button class="icon-btn" id="themeBtn" aria-label="Toggle light or dark theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
+    <button class="icon-btn" id="bellBtn" aria-label="Open notifications and reminders">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg>
+      <span class="dot-badge" id="bellDot"></span>
+    </button>
+  </header>
+
+  <main id="main">
+    <!-- ============ HOME ============ -->
+    <section class="screen" id="screen-home" aria-label="Home">
+      <div class="greet">
+        <div class="eyebrow" id="todayLine">Today</div>
+        <h1>Hey Sasi, how are you feeling today?</h1>
+        <p>A moment to check in with yourself — there are no wrong answers here.</p>
+      </div>
+
+      <div class="card welcome-note stack">
+        <p>Welcome to a space designed for self-discovery and inner peace. Here, you will explore your emotions, not be defined by them. Solace AI blends AI chat, mood checks, and mindfulness tools to support you in managing stress, anxiety, sleep, and emotional health.</p>
+      </div>
+
+      <div class="card stack">
+        <div class="row between">
+          <h2 style="font-size:17px">Quick mood check-in</h2>
+          <span class="small muted" id="homeCheckinState"></span>
+        </div>
+        <div class="faces" id="homeFaces" role="group" aria-label="Pick how you feel"></div>
+        <label class="flabel" for="homeNote">Add a note (optional)</label>
+        <input class="field" id="homeNote" type="text" placeholder="One line about your day…" autocomplete="off" />
+        <button class="btn block stack" id="homeSaveMood">Save check-in</button>
+      </div>
+
+      <div class="card stack">
+        <h2 style="font-size:17px;margin-bottom:4px">Jump back in</h2>
+        <div class="quick-grid stack" style="margin-top:10px">
+          <button class="quick-tile" data-go="chat"><span class="tile-ic tile-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.4-.7L3 20l.9-4.3A8.4 8.4 0 1 1 21 11.5Z"/></svg></span>Talk it out</button>
+          <button class="quick-tile" data-go="mood"><span class="tile-ic tile-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h4l2.5-6 4 12L16 12h5"/></svg></span>Track mood</button>
+          <button class="quick-tile" data-go="activities"><span class="tile-ic tile-lav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Breathe</button>
+        </div>
+      </div>
+
+      <div class="card stack affirm">
+        <div class="eyebrow">Today's gentle reminder</div>
+        <p id="affirmText">“You don't have to hold it all together. One small, kind step is enough for today.”</p>
+      </div>
+
+      <div class="card stack">
+        <h2 style="font-size:17px">Recent activity</h2>
+        <div id="recentActivity"></div>
+      </div>
+
+      <div class="card stack">
+        <div class="row between">
+          <h2 style="font-size:17px">Recent conversations</h2>
+          <button class="chip" data-go="chat">Open chat</button>
+        </div>
+        <div id="recentChats"></div>
+      </div>
+    </section>
+
+    <!-- ============ CHAT ============ -->
+    <section class="screen" id="screen-chat" aria-label="Chat with Solace">
+      <h1 style="font-size:23px">Talk to Solace</h1>
+      <p class="muted" style="margin:5px 0 14px">Your calm companion. Share what's on your mind — Solace listens, reflects the feeling underneath, and suggests something gentle that might help.</p>
+      <div class="chat-wrap">
+        <div class="chat-log" id="chatLog" aria-live="polite"></div>
+        <div class="typing" id="typing" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="prompt-row" id="promptRow"></div>
+        <div class="chat-input">
+          <textarea id="chatText" rows="1" placeholder="How are you feeling right now?" aria-label="Type your message"></textarea>
+          <button class="send-btn" id="chatSend" aria-label="Send message">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+          </button>
+        </div>
+        <p class="disclaimer">Solace is a supportive companion, not a medical professional. If you're ever in crisis, please reach out to a helpline — you'll find them in any crisis reply here, anytime.</p>
+      </div>
+    </section>
+
+    <!-- ============ MOOD ============ -->
+    <section class="screen" id="screen-mood" aria-label="Mood check-in and tracking">
+      <h1 style="font-size:23px">Mood check-in</h1>
+      <p class="muted" style="margin:5px 0 14px">Slide to where you are right now. Not where you think you should be — where you actually are.</p>
+
+      <div class="card">
+        <div class="mood-big">
+          <div class="big-emoji" id="moodEmoji">😐</div>
+          <div class="big-label" id="moodLabel">Okay</div>
+          <div class="small muted" id="moodScoreLine">5 out of 10</div>
+        </div>
+        <input type="range" id="moodSlider" min="1" max="10" step="1" value="5" aria-label="Mood from 1, very low, to 10, great" />
+        <div class="scale-labels"><span>Very low</span><span>Low</span><span>Okay</span><span>Good</span><span>Great</span></div>
+
+        <label class="flabel">What's shaping this mood?</label>
+        <div class="tag-row" id="moodTags"></div>
+
+        <label class="flabel" for="moodNote">Note or journal entry</label>
+        <textarea class="field" id="moodNote" rows="3" placeholder="What happened? What do you need? Write freely…"></textarea>
+
+        <button class="btn block stack" id="saveMoodBtn">Save today's check-in</button>
+        <p class="small muted" style="margin:10px 0 0" id="moodSavedHint"></p>
+      </div>
+
+      <div class="card stack">
+        <div class="row between">
+          <h2 style="font-size:17px">Mood trends</h2>
+          <div class="seg" role="group" aria-label="Chart range">
+            <button id="range7" class="on">7 days</button>
+            <button id="range14">14 days</button>
+          </div>
+        </div>
+        <div class="chart-box stack" id="chartBox"></div>
+        <p class="small muted" id="chartCaption" style="margin:8px 0 0"></p>
+      </div>
+
+      <div class="card stack">
+        <h2 style="font-size:17px">History</h2>
+        <div id="moodHistory"></div>
+      </div>
+    </section>
+
+    <!-- ============ ACTIVITIES ============ -->
+    <section class="screen" id="screen-activities" aria-label="Guided activities">
+      <h1 style="font-size:23px">Guided activities</h1>
+      <p class="muted" style="margin:5px 0 14px">Small practices, big exhale. Pick one and give yourself a few quiet minutes.</p>
+
+      <button class="act-card" data-player="breathingPlayer">
+        <span class="act-ic tile-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/><path d="M17.7 7.7A2.5 2.5 0 1 1 19.5 12H2"/></svg></span>
+        <span class="grow"><h3>Guided breathing</h3><p>Animated breathing timer to slow your body down.</p></span>
+      </button>
+      <div class="card player" id="breathingPlayer">
+        <label class="flabel" style="margin-top:0">Breathing pattern</label>
+        <div class="seg" id="breathPatterns" role="group" aria-label="Breathing pattern">
+          <button data-pattern="calm" class="on">Calm 4·4·6</button>
+          <button data-pattern="box">Box 4·4·4·4</button>
+          <button data-pattern="sleep">Sleep 4·7·8</button>
+        </div>
+        <div class="breath-stage">
+          <div class="breath-ring">
+            <svg class="ring" width="230" height="230" viewBox="0 0 230 230" aria-hidden="true">
+              <circle cx="115" cy="115" r="106" fill="none" stroke="var(--line)" stroke-width="8"/>
+              <circle id="breathProg" cx="115" cy="115" r="106" fill="none" stroke="var(--blue)" stroke-width="8" stroke-linecap="round" stroke-dasharray="666" stroke-dashoffset="666"/>
+            </svg>
+            <div class="breath-circle" id="breathCircle">Ready</div>
+          </div>
+          <div class="breath-count" id="breathCount">Choose a pattern, then press start.</div>
+        </div>
+        <div class="row" style="justify-content:center;gap:10px">
+          <button class="btn" id="breathToggle">Start breathing</button>
+          <button class="btn ghost" id="breathReset">Reset</button>
+        </div>
+        <p class="small muted" style="text-align:center;margin:12px 0 0" id="breathCycles">Cycles completed: 0</p>
+      </div>
+
+      <button class="act-card" data-player="meditationPlayer">
+        <span class="act-ic tile-lav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.2"/><path d="M4 20c1.5-3.6 4.4-5.4 8-5.4s6.5 1.8 8 5.4"/><path d="M2.5 17.5c2 .8 3.7.8 5.5 0M16.5 17.5c1.8.8 3.5.8 5.5 0"/></svg></span>
+        <span class="grow"><h3>Meditation</h3><p>A quiet timer with soft guidance to sit with your breath.</p></span>
+      </button>
+      <div class="card player" id="meditationPlayer">
+        <label class="flabel" style="margin-top:0">Duration</label>
+        <div class="seg" id="medDurations" role="group" aria-label="Meditation duration">
+          <button data-min="1">1 min</button>
+          <button data-min="3" class="on">3 min</button>
+          <button data-min="5">5 min</button>
+          <button data-min="10">10 min</button>
+        </div>
+        <div class="timer-big" id="medTimer">3:00</div>
+        <p class="small muted" style="text-align:center" id="medGuide">Find a comfortable seat. Let your shoulders drop.</p>
+        <div class="row" style="justify-content:center;gap:10px">
+          <button class="btn" id="medToggle">Begin meditation</button>
+          <button class="btn ghost" id="medReset">Reset</button>
+        </div>
+      </div>
+
+      <button class="act-card" data-player="groundingPlayer">
+        <span class="act-ic tile-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22c5-3 8-6.8 8-11V5.5L12 2 4 5.5V11c0 4.2 3 8 8 11Z"/><path d="M8.5 12h2l1.5-3 2 5 1.5-2h2"/></svg></span>
+        <span class="grow"><h3>5-4-3-2-1 grounding</h3><p>A mindfulness exercise to anchor you in the present moment.</p></span>
+      </button>
+      <div class="card player" id="groundingPlayer">
+        <div id="groundSteps"></div>
+        <div class="ground-dots" id="groundDots"></div>
+        <div class="row" style="justify-content:center;gap:10px">
+          <button class="btn ghost" id="groundPrev">Back</button>
+          <button class="btn green" id="groundNext">Next sense</button>
+        </div>
+      </div>
+
+      <button class="act-card" data-player="journalPlayer">
+        <span class="act-ic tile-lav" style="background:var(--peach-soft);color:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
+        <span class="grow"><h3>Journaling prompt</h3><p>One thoughtful prompt. Write honestly — no one reads this but you.</p></span>
+      </button>
+      <div class="card player" id="journalPlayer">
+        <p style="font-family:'Poppins',sans-serif;font-size:17px;margin:0 0 6px" id="journalPrompt"></p>
+        <button class="chip" id="newPromptBtn">↻ Another prompt</button>
+        <label class="flabel" for="journalText">Your entry</label>
+        <textarea class="field" id="journalText" rows="5" placeholder="Start anywhere. Messy is fine."></textarea>
+        <button class="btn block stack" id="saveJournalBtn">Save journal entry</button>
+        <div id="journalList" class="stack"></div>
+      </div>
+    </section>
+
+    <!-- ============ INSIGHTS ============ -->
+    <section class="screen" id="screen-insights" aria-label="Health insights">
+      <h1 style="font-size:23px">Health insights</h1>
+      <p class="muted" style="margin:5px 0 14px">Patterns from your check-ins and practices, turned into gentle, personal guidance.</p>
+
+      <div class="stat-grid">
+        <div class="stat"><div class="num" id="statAvg">—</div><div class="lbl">Average mood (7 days)</div></div>
+        <div class="stat"><div class="num" id="statStreak">0</div><div class="lbl">Day check-in streak 🔥</div></div>
+        <div class="stat"><div class="num" id="statCheckins">0</div><div class="lbl">Total check-ins</div></div>
+        <div class="stat"><div class="num" id="statMinutes">0</div><div class="lbl">Mindful minutes</div></div>
+      </div>
+
+      <div class="card stack">
+        <div class="row between"><h2 style="font-size:17px">Weekly wellness goal</h2><span class="small muted" id="goalText"></span></div>
+        <div class="bar-track"><div class="bar-fill" id="goalBar" style="width:0%"></div></div>
+        <p class="small muted" style="margin:10px 0 0">Goal: 5 check-ins or practices this week. Small and steady beats perfect.</p>
+      </div>
+
+      <div class="card stack">
+        <h2 style="font-size:17px">Your personalised insights</h2>
+        <div id="insightList"></div>
+      </div>
+
+      <div class="card stack">
+        <h2 style="font-size:17px">Milestones</h2>
+        <div id="mileList"></div>
+      </div>
+
+      <div class="card stack">
+        <div class="row between"><h2 style="font-size:17px">Daily wellness report</h2><span class="small muted" id="reportDate"></span></div>
+        <div id="dailyReport" style="margin-top:8px"></div>
+        <button class="btn ghost block stack" id="copyReportBtn">Copy today's report</button>
+      </div>
+    </section>
+
+    <!-- ============ NOTIFICATIONS ============ -->
+    <section class="screen" id="screen-alerts" aria-label="Notifications and reminders">
+      <h1 style="font-size:23px">Reminders</h1>
+      <p class="muted" style="margin:5px 0 14px">Gentle nudges, never noise. Solace checks in so you don't have to remember to.</p>
+
+      <div class="card">
+        <h2 style="font-size:17px;margin-bottom:4px">Your reminder plan</h2>
+        <div class="set-row">
+          <div class="grow"><h3>Daily mood check-in</h3><p>A soft prompt to log how you feel.</p></div>
+          <input class="field" type="time" id="remMoodTime" style="width:118px" aria-label="Mood check-in reminder time" />
+          <button class="switch" role="switch" id="swMood" aria-checked="true" aria-label="Toggle daily mood check-in reminder"></button>
+        </div>
+        <div class="set-row">
+          <div class="grow"><h3>Evening wind-down</h3><p>Breathing or journaling before bed, for better sleep.</p></div>
+          <input class="field" type="time" id="remWindTime" style="width:118px" aria-label="Evening wind-down reminder time" />
+          <button class="switch" role="switch" id="swWind" aria-checked="true" aria-label="Toggle evening wind-down reminder"></button>
+        </div>
+        <div class="set-row">
+          <div class="grow"><h3>Weekly reflection</h3><p>Sundays — review your trends and insights.</p></div>
+          <button class="switch" role="switch" id="swWeekly" aria-checked="false" aria-label="Toggle weekly reflection reminder"></button>
+        </div>
+        <div class="set-row">
+          <div class="grow"><h3>Browser notifications</h3><p id="notifPermText">Let Solace send gentle reminders in this browser.</p></div>
+          <button class="btn ghost" id="notifPermBtn" style="padding:9px 14px">Enable</button>
+        </div>
+        <button class="btn block stack" id="testReminderBtn">Send me a gentle reminder now</button>
+      </div>
+
+      <div class="card stack">
+        <h2 style="font-size:17px">For you</h2>
+        <div id="notifFeed"></div>
+      </div>
+    </section>
+
+    <!-- ============ PROFILE ============ -->
+    <section class="screen" id="screen-profile" aria-label="Profile and settings">
+      <h1 style="font-size:23px">Profile &amp; settings</h1>
+      <p class="muted" style="margin:5px 0 14px">Your space, your rules. Everything stays on this device.</p>
+
+      <div class="card" style="text-align:center">
+        <div class="avatar-lg" id="avatarInit">S</div>
+        <h2 style="font-size:19px;margin-top:12px" id="profileName">Sasi</h2>
+        <p class="small muted" style="margin:3px 0 0" id="profileSince">On your wellness journey</p>
+        <label class="flabel" for="nameInput" style="text-align:left">Your name</label>
+        <input class="field" id="nameInput" type="text" value="Sasi" autocomplete="name" />
+        <button class="btn block stack" id="saveNameBtn">Save name</button>
+      </div>
+
+      <div class="card stack">
+        <h2 style="font-size:17px;margin-bottom:4px">Appearance</h2>
+        <div class="set-row">
+          <div class="grow"><h3>Theme</h3><p>Calm light, or a softer dark for evenings.</p></div>
+          <div class="seg" style="width:170px" role="group" aria-label="Theme">
+            <button id="themeLight">Light</button>
+            <button id="themeDark">Dark</button>
+          </div>
+        </div>
+        <div class="set-row">
+          <div class="grow"><h3>Daily affirmation on Home</h3><p>A short kind line to start the day.</p></div>
+          <button class="switch" role="switch" id="swAffirm" aria-checked="true" aria-label="Toggle daily affirmation"></button>
+        </div>
+      </div>
+
+      <div class="card stack">
+        <h2 style="font-size:17px;margin-bottom:4px">Preferences</h2>
+        <div class="set-row">
+          <div class="grow"><h3>Focus areas</h3><p>What Solace should gently prioritise for you.</p></div>
+        </div>
+        <div class="tag-row" id="focusTags" style="margin-top:2px"></div>
+        <div class="set-row">
+          <div class="grow"><h3>Chat style</h3><p>How Solace talks with you.</p></div>
+          <select class="field" id="chatStyle" style="width:170px" aria-label="Chat style">
+            <option value="warm">Warm &amp; gentle</option>
+            <option value="coach">Encouraging coach</option>
+            <option value="brief">Short &amp; simple</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card stack">
+        <h2 style="font-size:17px;margin-bottom:4px">Privacy &amp; your data</h2>
+        <p class="small muted" style="margin:6px 0 0">Solace AI works fully offline in your browser. Your check-ins, chats and journal entries are stored only in this browser's local storage — never sent anywhere, and there's no account or sign-in.</p>
+        <div class="row stack" style="gap:10px;flex-wrap:wrap">
+          <button class="btn ghost" id="exportBtn">Export my data (JSON)</button>
+          <button class="btn ghost" id="clearChatBtn">Clear chat history</button>
+        </div>
+        <button class="btn danger-btn block stack" id="wipeBtn">Erase everything</button>
+      </div>
+
+      <div class="card stack">
+        <h2 style="font-size:17px">About Solace AI</h2>
+        <p class="small muted" style="margin:6px 0 0">A mental-wellness companion blending AI chat, mood checks and mindfulness tools to support you with stress, anxiety, sleep and emotional health. Solace supports your wellbeing — it doesn't replace professional care. If you're struggling, please reach out to a trusted person or a helpline.</p>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottomnav" aria-label="Main navigation">
+    <button class="nav-btn" data-screen="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</button>
+    <button class="nav-btn" data-screen="chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.4-.7L3 20l.9-4.3A8.4 8.4 0 1 1 21 11.5Z"/></svg>Chat</button>
+    <button class="nav-btn" data-screen="mood"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h4l2.5-6 4 12L16 12h5"/></svg>Mood</button>
+    <button class="nav-btn" data-screen="activities"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/><path d="M17.7 7.7A2.5 2.5 0 1 1 19.5 12H2"/></svg>Breathe</button>
+    <button class="nav-btn" data-screen="insights"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>Insights</button>
+    <button class="nav-btn" data-screen="alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg>Remind</button>
+    <button class="nav-btn" data-screen="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-3.8 4.6-5.5 8-5.5s6.4 1.7 8 5.5"/></svg>Profile</button>
+  </nav>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<dialog id="confirmDialog" aria-labelledby="confirmTitle">
+  <h2 id="confirmTitle" style="font-size:18px">Erase everything?</h2>
+  <p class="small muted">This permanently deletes your mood history, chats, journal entries and settings from this browser. This can't be undone.</p>
+  <div class="row" style="justify-content:flex-end;gap:10px;margin-top:16px">
+    <button class="btn ghost" id="cancelWipe">Keep my data</button>
+    <button class="btn danger-btn" id="confirmWipe">Erase all</button>
+  </div>
+</dialog>
+
+<script>
+"use strict";
+/* ================= Solace AI — all logic runs locally in the browser ================= */
+const LS_KEY = "solaceAI.v1";
+const $ = (s, el) => (el || document).querySelector(s);
+const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+
+const MOODS = [
+  { score: 2, emoji: "😢", label: "Very low" },
+  { score: 4, emoji: "🙁", label: "Low" },
+  { score: 5, emoji: "😐", label: "Okay" },
+  { score: 7, emoji: "🙂", label: "Good" },
+  { score: 9, emoji: "😄", label: "Great" }
+];
+const MOOD_TAGS = ["Work", "Family", "Friends", "Health", "Sleep", "Money", "Study", "Weather", "Exercise", "Just one of those days"];
+const FOCUS_AREAS = ["Stress", "Anxiety", "Sleep", "Emotional health", "Focus", "Self-esteem"];
+const PROMPTS = [
+  "What's one small thing that went right today?",
+  "What is your body trying to tell you right now?",
+  "Write a kind letter to yourself, as you would to a dear friend.",
+  "What would you do tomorrow if you woke up feeling 10% lighter?",
+  "Name three things you can see, hear and feel in this moment.",
+  "What's one worry you can set down for tonight?",
+  "Describe a place where you feel completely safe. What makes it safe?",
+  "What do you need more of this week? What do you need less of?",
+  "Write about a hard moment you survived. What did it teach you?",
+  "What would 'good enough' look like today, instead of perfect?"
+];
+const AFFIRMATIONS = [
+  "“You don't have to hold it all together. One small, kind step is enough for today.”",
+  "“Feelings are visitors. You are the house — steady, and still standing.”",
+  "“Rest is not a reward for finishing. It's part of how you heal.”",
+  "“You have survived every hard day so far. That's a 100% record.”",
+  "“Be where your feet are. This moment is manageable.”",
+  "“It's okay to not be okay — and it's okay to ask for help.”",
+  "“Progress can be quiet. A deep breath counts.”"
+];
+const GROUND_STEPS = [
+  { n: "👀", num: 5, sense: "things you can SEE", tip: "Look around slowly. Name the colours, shapes and light." },
+  { n: "✋", num: 4, sense: "things you can TOUCH", tip: "The chair beneath you, fabric, air on your skin. Notice textures." },
+  { n: "👂", num: 3, sense: "things you can HEAR", tip: "Near sounds, far sounds, and the quiet underneath them." },
+  { n: "👃", num: 2, sense: "things you can SMELL", tip: "Even faint ones count — soap, rain, coffee, fresh air." },
+  { n: "👅", num: 1, sense: "thing you can TASTE", tip: "A sip of water, or simply the taste of this moment. You're here." }
+];
+
+/* ---------- State ---------- */
+function defaultState() {
+  return {
+    settings: {
+      name: "Sasi", theme: "light", affirm: true, focus: ["Stress", "Sleep"], chatStyle: "warm",
+      remMood: true, remMoodTime: "09:00", remWind: true, remWindTime: "21:30", remWeekly: false
+    },
+    moods: [],        // {date:'YYYY-MM-DD', score, label, note, tags:[], ts}
+    chat: [],         // {role:'ai'|'me', text, ts, crisis?, activity?}
+    activities: [],   // {type:'breathing'|'meditation'|'grounding'|'journal', minutes, ts}
+    journal: [],      // {prompt, text, ts}
+    joined: Date.now()
+  };
+}
+let state;
+try {
+  const raw = localStorage.getItem(LS_KEY);
+  state = raw ? Object.assign(defaultState(), JSON.parse(raw)) : defaultState();
+  state.settings = Object.assign(defaultState().settings, state.settings || {});
+} catch (e) { state = defaultState(); }
+function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {} }
+
+function todayStr(d) { d = d || new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function fmtDate(ds) { const d = new Date(ds + "T12:00:00"); return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" }); }
+function moodMeta(score) {
+  if (score <= 2) return { emoji: "😢", label: "Very low" };
+  if (score <= 4) return { emoji: "🙁", label: "Low" };
+  if (score <= 6) return { emoji: "😐", label: "Okay" };
+  if (score <= 8) return { emoji: "🙂", label: "Good" };
+  return { emoji: "😄", label: "Great" };
+}
+function moodColor(score) { return score <= 3 ? "#d96a7e" : score <= 5 ? "#e8975a" : score <= 7 ? "#8fae4f" : "#4fae83"; }
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 2600); }
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+/* ---------- Theme ---------- */
+function applyTheme() {
+  document.documentElement.setAttribute("data-theme", state.settings.theme);
+  $("#themeLight").classList.toggle("on", state.settings.theme === "light");
+  $("#themeDark").classList.toggle("on", state.settings.theme === "dark");
+}
+$("#themeBtn").addEventListener("click", () => { state.settings.theme = state.settings.theme === "light" ? "dark" : "light"; save(); applyTheme(); });
+$("#themeLight").addEventListener("click", () => { state.settings.theme = "light"; save(); applyTheme(); });
+$("#themeDark").addEventListener("click", () => { state.settings.theme = "dark"; save(); applyTheme(); });
+
+/* ---------- Navigation ---------- */
+let currentScreen = "home";
+function go(screen) {
+  currentScreen = screen;
+  $$(".screen").forEach(s => s.classList.toggle("active", s.id === "screen-" + screen));
+  $$(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.screen === screen));
+  window.scrollTo({ top: 0 });
+  if (screen === "home") renderHome();
+  if (screen === "mood") renderMood();
+  if (screen === "insights") renderInsights();
+  if (screen === "alerts") renderAlerts();
+  if (screen === "profile") renderProfile();
+  if (screen === "chat") scrollChat();
+}
+$$(".nav-btn").forEach(b => b.addEventListener("click", () => go(b.dataset.screen)));
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-go]");
+  if (t) go(t.dataset.go);
+});
+$("#bellBtn").addEventListener("click", () => go("alerts"));
+
+/* ---------- Home ---------- */
+let homeMood = null;
+function renderHomeFaces() {
+  const box = $("#homeFaces"); box.innerHTML = "";
+  MOODS.forEach(m => {
+    const b = document.createElement("button");
+    b.className = "face" + (homeMood === m.score ? " sel" : "");
+    b.setAttribute("aria-pressed", homeMood === m.score ? "true" : "false");
+    b.innerHTML = '<span class="emoji" aria-hidden="true">' + m.emoji + "</span>" + m.label;
+    b.addEventListener("click", () => { homeMood = m.score; renderHomeFaces(); });
+    box.appendChild(b);
+  });
+}
+function renderHome() {
+  const now = new Date();
+  $("#todayLine").textContent = now.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" });
+  const name = state.settings.name || "friend";
+  $("#screen-home .greet h1").textContent = "Hey " + name + ", how are you feeling today?";
+  const todayEntry = state.moods.find(m => m.date === todayStr());
+  $("#homeCheckinState").textContent = todayEntry ? "Logged: " + moodMeta(todayEntry.score).emoji + " " + moodMeta(todayEntry.score).label : "Not logged yet today";
+  $("#affirmText").textContent = AFFIRMATIONS[now.getDate() % AFFIRMATIONS.length];
+  $(".affirm").style.display = state.settings.affirm ? "" : "none";
+  renderHomeFaces();
+
+  // Recent activity
+  const acts = state.activities.slice(-4).reverse();
+  const ra = $("#recentActivity");
+  if (!acts.length && !state.moods.length) {
+    ra.innerHTML = '<p class="empty-note">Nothing here yet — your check-ins and practices will appear here as you go.</p>';
+  } else {
+    const items = [];
+    state.moods.slice(-2).reverse().forEach(m => items.push({ ic: moodMeta(m.score).emoji, bg: "var(--surface-3)", title: "Mood check-in — " + moodMeta(m.score).label + " (" + m.score + "/10)", sub: fmtDate(m.date) + (m.note ? " · “" + esc(m.note) + "”" : "") }));
+    acts.forEach(a => items.push({ ic: a.type === "breathing" ? "🌬️" : a.type === "meditation" ? "🧘" : a.type === "grounding" ? "🌿" : "✍️", bg: "var(--green-soft)", title: cap(a.type) + " practice", sub: new Date(a.ts).toLocaleString(undefined, { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) + (a.minutes ? " · " + a.minutes + " min" : "") }));
+    ra.innerHTML = items.slice(0, 4).map(i => '<div class="list-item"><span class="li-ic" style="background:' + i.bg + ';font-size:18px">' + i.ic + '</span><div class="grow"><strong style="font-size:14.5px">' + i.title + '</strong><div class="small muted">' + i.sub + "</div></div></div>").join("");
+  }
+  // Recent conversations
+  const last = state.chat.filter(m => m.role === "me").slice(-2).reverse();
+  const rc = $("#recentChats");
+  rc.innerHTML = last.length
+    ? last.map(m => '<div class="list-item"><span class="li-ic tile-blue" style="background:var(--blue-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.4-.7L3 20l.9-4.3A8.4 8.4 0 1 1 21 11.5Z"/></svg></span><div class="grow"><div style="font-size:14.5px">“' + esc(truncate(m.text, 90)) + '”</div><div class="small muted">' + new Date(m.ts).toLocaleString(undefined, { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) + "</div></div></div>").join("")
+    : '<p class="empty-note">No conversations yet. When something\'s on your mind, Solace is one tap away.</p>';
+}
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function truncate(s, n) { return s.length > n ? s.slice(0, n - 1) + "…" : s; }
+$("#homeSaveMood").addEventListener("click", () => {
+  if (homeMood === null) { toast("Pick a face that matches how you feel first 💙"); return; }
+  upsertMood({ score: homeMood, note: $("#homeNote").value.trim(), tags: [] });
+  $("#homeNote").value = ""; homeMood = null;
+  toast("Check-in saved. Thank you for being honest with yourself.");
+  renderHome();
+});
+
+/* ---------- Mood screen ---------- */
+let sliderScore = 5, selectedTags = new Set(), chartRange = 7;
+function sliderUpdate() {
+  const m = moodMeta(sliderScore);
+  $("#moodEmoji").textContent = m.emoji;
+  $("#moodLabel").textContent = m.label;
+  $("#moodScoreLine").textContent = sliderScore + " out of 10";
+}
+$("#moodSlider").addEventListener("input", e => { sliderScore = +e.target.value; sliderUpdate(); });
+function renderTagRow() {
+  const box = $("#moodTags"); box.innerHTML = "";
+  MOOD_TAGS.forEach(t => {
+    const b = document.createElement("button");
+    b.className = "chip" + (selectedTags.has(t) ? " on" : "");
+    b.textContent = t;
+    b.setAttribute("aria-pressed", selectedTags.has(t) ? "true" : "false");
+    b.addEventListener("click", () => { selectedTags.has(t) ? selectedTags.delete(t) : selectedTags.add(t); renderTagRow(); });
+    box.appendChild(b);
+  });
+}
+function upsertMood(entry) {
+  const d = todayStr();
+  const existing = state.moods.find(m => m.date === d);
+  if (existing) { existing.score = entry.score; existing.note = entry.note; existing.tags = entry.tags; existing.ts = Date.now(); }
+  else state.moods.push({ date: d, score: entry.score, note: entry.note, tags: entry.tags, ts: Date.now() });
+  state.moods.sort((a, b) => a.date < b.date ? -1 : 1);
+  save();
+  renderProfile();
+}
+$("#saveMoodBtn").addEventListener("click", () => {
+  upsertMood({ score: sliderScore, note: $("#moodNote").value.trim(), tags: Array.from(selectedTags) });
+  $("#moodNote").value = ""; selectedTags.clear(); renderTagRow();
+  toast("Saved. Your future self thanks you for tracking this.");
+  renderMood();
+});
+$("#range7").addEventListener("click", () => { chartRange = 7; $("#range7").classList.add("on"); $("#range14").classList.remove("on"); drawChart(); });
+$("#range14").addEventListener("click", () => { chartRange = 14; $("#range14").classList.add("on"); $("#range7").classList.remove("on"); drawChart(); });
+
+function lastNDays(n) {
+  const out = [];
+  for (let i = n - 1; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); out.push(todayStr(d)); }
+  return out;
+}
+function drawChart() {
+  const box = $("#chartBox");
+  const days = lastNDays(chartRange);
+  const byDate = {}; state.moods.forEach(m => byDate[m.date] = m.score);
+  const pts = days.map(d => byDate[d] !== undefined ? byDate[d] : null);
+  const have = pts.filter(p => p !== null);
+  if (!have.length) {
+    box.innerHTML = '<p class="empty-note" style="text-align:center;padding:22px 0">Your trend line will appear here after your first check-in.<br/>One honest log a day is all it takes.</p>';
+    $("#chartCaption").textContent = "";
+    return;
+  }
+  const W = 340, H = 150, padL = 26, padR = 10, padT = 14, padB = 24;
+  const x = i => padL + (W - padL - padR) * (days.length === 1 ? .5 : i / (days.length - 1));
+  const y = v => padT + (H - padT - padB) * (1 - (v - 1) / 9);
+  let path = "", started = false, dots = "";
+  pts.forEach((p, i) => {
+    if (p === null) { started = false; return; }
+    path += (started ? " L" : "M") + x(i).toFixed(1) + " " + y(p).toFixed(1);
+    started = true;
+    dots += '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(p).toFixed(1) + '" r="4" fill="' + moodColor(p) + '" stroke="var(--surface)" stroke-width="2"><title>' + fmtDate(days[i]) + ": " + p + "/10</title></circle>";
+  });
+  let grid = "";
+  [2, 5, 8, 10].forEach(v => { grid += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--line)" stroke-width="1"/><text x="2" y="' + (y(v) + 4) + '" font-size="10" fill="var(--muted)">' + v + "</text>"; });
+  let labels = "";
+  days.forEach((d, i) => { if (chartRange === 7 || i % 2 === 0) labels += '<text x="' + x(i) + '" y="' + (H - 6) + '" font-size="9.5" fill="var(--muted)" text-anchor="middle">' + new Date(d + "T12:00:00").toLocaleDateString(undefined, { weekday: "narrow" }) + "</text>"; });
+  box.innerHTML = '<svg viewBox="0 0 ' + W + " " + H + '" width="100%" role="img" aria-label="Mood trend chart">' + grid + '<path d="' + path + '" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round"/>' + dots + labels + "</svg>";
+  const avg = have.reduce((a, b) => a + b, 0) / have.length;
+  $("#chartCaption").textContent = "Average over this period: " + avg.toFixed(1) + "/10 · " + have.length + " check-in" + (have.length === 1 ? "" : "s") + " logged.";
+}
+function renderMood() {
+  sliderUpdate(); renderTagRow(); drawChart();
+  const todayEntry = state.moods.find(m => m.date === todayStr());
+  $("#moodSavedHint").textContent = todayEntry ? "You've already checked in today (" + moodMeta(todayEntry.score).label + "). Saving again updates today's entry." : "";
+  const hist = state.moods.slice().reverse();
+  $("#moodHistory").innerHTML = hist.length ? hist.map(m =>
+    '<div class="list-item"><span class="hist-score" style="background:' + moodColor(m.score) + '22">' + moodMeta(m.score).emoji + '</span><div class="grow"><strong style="font-size:14.5px">' + moodMeta(m.score).label + " · " + m.score + '/10</strong><div class="small muted">' + fmtDate(m.date) + (m.tags && m.tags.length ? " · " + esc(m.tags.join(", ")) : "") + '</div>' + (m.note ? '<div style="font-size:14px;margin-top:2px">“' + esc(m.note) + '”</div>' : "") + "</div></div>"
+  ).join("") : '<p class="empty-note">No check-ins yet. Your history will live here.</p>';
+}
+
+/* ---------- Chat ---------- */
+const QUICK_PROMPTS = ["I'm feeling anxious", "I can't sleep", "Work is stressing me out", "I feel sad today", "I need to calm down", "I'm actually doing well"];
+const CRISIS_WORDS = ["suicide", "suicidal", "kill myself", "end my life", "end it all", "self harm", "self-harm", "hurt myself", "harm myself", "don't want to live", "do not want to live", "no reason to live", "better off dead", "want to die", "cut myself", "overdose"];
+const FEELINGS = [
+  { keys: ["anxious", "anxiety", "panic", "worried", "worry", "nervous", "scared", "afraid", "fear"], name: "anxiety", activity: "breathing",
+    replies: [
+      "I can hear the anxiety in that. A racing mind is exhausting — and it makes complete sense you'd want some quiet. Before anything else: you're safe here, and this feeling, however loud, is not permanent.",
+      "That sounds like anxiety tightening its grip. It often shows up when we care a lot and feel out of control. Let's shrink this moment down to just the next breath."
+    ], tip: "A slow breathing cycle — in for 4, hold for 4, out for 6 — tells your nervous system the danger has passed. Want to try it together?" },
+  { keys: ["stress", "stressed", "pressure", "overwhelmed", "overwhelm", "deadline", "too much", "burnout", "burned out"], name: "stress and overwhelm", activity: "grounding",
+    replies: [
+      "That's a lot to be carrying. Feeling overwhelmed usually means the load is real — not that you're weak. Let's set it down piece by piece, starting with this moment.",
+      "I hear you — stress piling up like that would wear anyone down. You don't have to solve all of it tonight. What's the single heaviest piece right now?"
+    ], tip: "The 5-4-3-2-1 grounding exercise can pull your mind out of the spiral and back into the room. Shall we do it?" },
+  { keys: ["sad", "down", "depress", "cry", "crying", "lonely", "alone", "empty", "hopeless", "unhappy", "low"], name: "sadness", activity: "journal",
+    replies: [
+      "I'm really glad you told me. Sadness like this deserves gentleness, not fixing. You don't have to carry it alone or explain it perfectly — I'm here, and we'll sit with it as long as you need.",
+      "That sounds heavy and lonely. Some days the grey just settles in. Whatever brought it on, your feelings make sense — and small comforts still count on days like this."
+    ], tip: "Writing it out can loosen sadness's hold a little. There's a journaling prompt waiting for you — no rules, just honesty." },
+  { keys: ["sleep", "insomnia", "awake", "tired", "exhausted", "restless night", "can't sleep", "cant sleep"], name: "tiredness and restless sleep", activity: "breathing",
+    replies: [
+      "Running on empty is brutal — everything feels harder when you're tired. Your body is asking for rest, not more effort. Let's help it wind down properly.",
+      "Poor sleep makes the whole world sharper and harder to face. No wonder you're feeling it. Tonight, let's build a softer landing into sleep."
+    ], tip: "The 4-7-8 'Sleep' breathing pattern is designed to slow your heart rate before bed. Give it a few cycles tonight." },
+  { keys: ["angry", "anger", "frustrated", "frustration", "annoyed", "irritated", "furious", "mad"], name: "frustration", activity: "breathing",
+    replies: [
+      "Frustration like that usually means something matters to you and it went wrong. That reaction is human. Let's let the heat settle before it steers the rest of your day.",
+      "I hear the anger in that — and underneath anger there's almost always something that hurt or felt unfair. Both parts deserve a hearing."
+    ], tip: "Box breathing (4·4·4·4) is what pilots use to steady themselves under pressure. Two minutes of it can genuinely reset you." },
+  { keys: ["happy", "good", "great", "better", "calm", "grateful", "well", "fine", "okay", "ok", "proud", "excited"], name: "a lighter moment", activity: "meditation",
+    replies: [
+      "That's genuinely lovely to hear. Moments like this are worth noticing on purpose — they're the proof that the hard days aren't the whole story.",
+      "I'm glad. Let's bottle a little of this feeling: what do you think helped today go this way? Naming it makes it easier to find again."
+    ], tip: "A short meditation now can help you savour and anchor this steadier headspace." },
+  { keys: ["job", "work", "boss", "interview", "career", "office", "colleague", "meeting"], name: "work pressure", activity: "grounding",
+    replies: [
+      "Work pressure has a way of following us home in our heads. It makes sense this is weighing on you — caring about doing well is a strength, even when it costs you peace.",
+      "That sounds like a heavy stretch at work. Remember: your worth was never measured by one role, one interview, or one person's decision. Let's get you out of the spiral for a minute."
+    ], tip: "A quick grounding exercise between tasks can stop work stress from bleeding into your whole evening." }
+];
+const FALLBACKS = [
+  "Thank you for trusting me with that. I'm listening — tell me a little more about what's been sitting with you today.",
+  "I hear you. Sometimes just saying it out loud (or typing it here) makes it a fraction lighter. What part of this feels heaviest right now?",
+  "That matters, and so do you. Let's slow down together — what's one small thing that might make the next hour a little gentler?"
+];
+const STYLE_OPEN = { warm: "", coach: "You've got this — and I'm right here with you. ", brief: "" };
+
+function seedChat() {
+  if (!state.chat.length) {
+    state.chat.push({ role: "ai", ts: Date.now(), text: "Hello " + (state.settings.name || "friend") + " 🌿 I'm Solace, your calm companion. However today feels — heavy, hopeful, or somewhere in between — you can say it here, exactly as it is. What's on your mind?" });
+    save();
+  }
+}
+function renderChat() {
+  const log = $("#chatLog"); log.innerHTML = "";
+  state.chat.forEach(m => {
+    const d = document.createElement("div");
+    d.className = "msg " + (m.role === "me" ? "me" : "ai") + (m.crisis ? " crisis" : "");
+    if (m.crisis) {
+      d.innerHTML = '<span class="who">Solace · here for you</span>' + esc(m.text) +
+        '<div style="margin-top:10px;line-height:1.9"><strong>You deserve support right now:</strong><br/>' +
+        '🇮🇳 <strong>KIRAN (Govt. of India):</strong> <a href="tel:18005990019">1800-599-0019</a> — free, 24×7<br/>' +
+        '🇮🇳 <strong>iCall:</strong> <a href="tel:9152987821">9152987821</a> · <a href="https://icallhelpline.org" target="_blank" rel="noopener">icallhelpline.org</a><br/>' +
+        '🇮🇳 <strong>Vandrevala Foundation:</strong> <a href="tel:18602662345">1860-2662-345</a> — 24×7, multilingual<br/>' +
+        '🇮🇳 <strong>AASRA:</strong> <a href="tel:9820466726">9820466726</a><br/>' +
+        '🌍 Outside India: <a href="https://findahelpline.org" target="_blank" rel="noopener">findahelpline.org</a> lists crisis lines worldwide.</div>' +
+        '<div style="margin-top:8px">If you might act on these feelings, please call <strong>112</strong> (India emergency) or your local emergency number, or go to the nearest hospital. You matter, and help is real.</div>';
+    } else {
+      d.innerHTML = (m.role === "ai" ? '<span class="who">Solace</span>' : "") + esc(m.text);
+      if (m.activity) {
+        const b = document.createElement("button");
+        b.className = "act-link";
+        b.textContent = m.activity === "breathing" ? "🌬️ Try guided breathing" : m.activity === "grounding" ? "🌿 Try 5-4-3-2-1 grounding" : m.activity === "journal" ? "✍️ Open journaling" : "🧘 Start a short meditation";
+        b.addEventListener("click", () => { go("activities"); openPlayer(m.activity === "journal" ? "journalPlayer" : m.activity === "grounding" ? "groundingPlayer" : m.activity === "meditation" ? "meditationPlayer" : "breathingPlayer"); });
+        d.appendChild(document.createElement("br")); d.appendChild(b);
+      }
+    }
+    log.appendChild(d);
+  });
+  scrollChat();
+}
+function scrollChat() { requestAnimationFrame(() => window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })); }
+function renderPrompts() {
+  const row = $("#promptRow"); row.innerHTML = "";
+  QUICK_PROMPTS.forEach(p => {
+    const b = document.createElement("button"); b.className = "chip"; b.textContent = p;
+    b.addEventListener("click", () => sendChat(p));
+    row.appendChild(b);
+  });
+}
+function solaceReply(userText) {
+  const t = " " + userText.toLowerCase() + " ";
+  if (CRISIS_WORDS.some(w => t.includes(w))) {
+    return { crisis: true, text: "I'm really glad you told me this, and I'm taking it seriously. What you're feeling sounds unbearable right now — but you don't have to face it alone, and this pain is not the end of your story. Please reach out to one of these free, confidential helplines right now, and if you can, tell someone near you how you're feeling." };
+  }
+  for (const f of FEELINGS) {
+    if (f.keys.some(k => t.includes(k))) {
+      const base = f.replies[Math.floor(Math.random() * f.replies.length)];
+      let text = (STYLE_OPEN[state.settings.chatStyle] || "") + base + "\n\n" + f.tip;
+      if (state.settings.chatStyle === "brief") text = base.split(". ").slice(0, 2).join(". ") + ". " + f.tip;
+      return { text, activity: f.activity, feeling: f.name };
+    }
+  }
+  return { text: FALLBACKS[Math.floor(Math.random() * FALLBACKS.length)] + "\n\nAnd if it helps, a few slow breaths together is always a good place to start.", activity: "breathing" };
+}
+function sendChat(text) {
+  text = (text !== undefined ? text : $("#chatText").value).trim();
+  if (!text) return;
+  state.chat.push({ role: "me", text, ts: Date.now() });
+  $("#chatText").value = ""; autoGrow();
+  save(); renderChat();
+  $("#typing").classList.add("show"); scrollChat();
+  const reply = solaceReply(text);
+  setTimeout(() => {
+    $("#typing").classList.remove("show");
+    state.chat.push({ role: "ai", text: reply.text, ts: Date.now(), crisis: !!reply.crisis, activity: reply.crisis ? null : reply.activity });
+    save(); renderChat();
+    if (currentScreen === "home") renderHome();
+  }, 900 + Math.random() * 700);
+}
+function autoGrow() { const ta = $("#chatText"); ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 96) + "px"; }
+$("#chatText").addEventListener("input", autoGrow);
+$("#chatText").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } });
+$("#chatSend").addEventListener("click", () => sendChat());
+
+/* ---------- Activities ---------- */
+function openPlayer(id) { $$(".player").forEach(p => p.classList.toggle("open", p.id === id)); }
+$$(".act-card").forEach(c => c.addEventListener("click", () => {
+  const id = c.dataset.player;
+  const wasOpen = $("#" + id).classList.contains("open");
+  $$(".player").forEach(p => p.classList.remove("open"));
+  if (!wasOpen) $("#" + id).classList.add("open");
+}));
+function logActivity(type, minutes) { state.activities.push({ type, minutes: minutes || 0, ts: Date.now() }); save(); renderProfile(); }
+
+/* Breathing */
+const PATTERNS = {
+  calm: { phases: [["Breathe in", 4], ["Hold", 4], ["Breathe out", 6]], name: "Calm 4·4·6" },
+  box: { phases: [["Breathe in", 4], ["Hold", 4], ["Breathe out", 4], ["Hold", 4]], name: "Box 4·4·4·4" },
+  sleep: { phases: [["Breathe in", 4], ["Hold", 7], ["Breathe out", 8]], name: "Sleep 4·7·8" }
+};
+let breathPattern = "calm", breathing = false, breathTimer = null, breathCycles = 0, breathStartTs = 0;
+$$("#breathPatterns button").forEach(b => b.addEventListener("click", () => {
+  breathPattern = b.dataset.pattern;
+  $$("#breathPatterns button").forEach(x => x.classList.toggle("on", x === b));
+  stopBreathing(); $("#breathCount").textContent = PATTERNS[breathPattern].name + " selected. Press start when ready.";
+}));
+function runPhase(idx) {
+  if (!breathing) return;
+  const phases = PATTERNS[breathPattern].phases;
+  const [label, secs] = phases[idx];
+  const circle = $("#breathCircle");
+  circle.textContent = label;
+  const total = phases.reduce((a, p) => a + p[1], 0);
+  const before = phases.slice(0, idx).reduce((a, p) => a + p[1], 0);
+  circle.style.transition = "transform " + secs + "s linear";
+  circle.style.transform = label === "Breathe in" ? "scale(1.45)" : label === "Breathe out" ? "scale(1)" : circle.style.transform || "scale(1.2)";
+  let left = secs;
+  const ring = $("#breathProg");
+  const CIRC = 666;
+  const tick = () => {
+    if (!breathing) return;
+    const frac = (before + (secs - left)) / total;
+    ring.style.strokeDashoffset = String(CIRC * (1 - frac));
+    $("#breathCount").textContent = label + " · " + Math.ceil(left) + "s · Cycle " + (breathCycles + 1);
+    if (left <= 0) {
+      const next = (idx + 1) % phases.length;
+      if (next === 0) { breathCycles++; $("#breathCycles").textContent = "Cycles completed: " + breathCycles; ring.style.strokeDashoffset = String(CIRC); }
+      runPhase(next); return;
+    }
+    left -= 0.1;
+    breathTimer = setTimeout(tick, 100);
+  };
+  tick();
+}
+function stopBreathing() {
+  breathing = false; clearTimeout(breathTimer);
+  const c = $("#breathCircle"); c.style.transition = "transform .6s ease"; c.style.transform = "scale(1)"; c.textContent = "Ready";
+  $("#breathToggle").textContent = "Start breathing";
+  $("#breathProg").style.strokeDashoffset = "666";
+}
+$("#breathToggle").addEventListener("click", () => {
+  if (breathing) {
+    const mins = Math.max(1, Math.round((Date.now() - breathStartTs) / 60000));
+    if (breathCycles > 0) { logActivity("breathing", mins); toast("Beautifully done — " + breathCycles + " cycle" + (breathCycles === 1 ? "" : "s") + " completed."); }
+    stopBreathing(); return;
+  }
+  breathing = true; breathStartTs = Date.now(); breathCycles = 0;
+  $("#breathCycles").textContent = "Cycles completed: 0";
+  $("#breathToggle").textContent = "Finish session";
+  runPhase(0);
+});
+$("#breathReset").addEventListener("click", () => { stopBreathing(); breathCycles = 0; $("#breathCycles").textContent = "Cycles completed: 0"; $("#breathCount").textContent = "Choose a pattern, then press start."; });
+
+/* Meditation */
+let medMins = 3, medLeft = 180, medTimer = null, medRunning = false;
+const MED_GUIDES = ["Find a comfortable seat. Let your shoulders drop.", "Notice the breath — no need to change it.", "When thoughts wander, gently return. That returning IS the practice.", "Let sounds come and go, like clouds passing.", "Soften your jaw, your hands, your belly.", "You are doing enough. Simply being here is the practice."];
+$$("#medDurations button").forEach(b => b.addEventListener("click", () => {
+  medMins = +b.dataset.min; $$("#medDurations button").forEach(x => x.classList.toggle("on", x === b)); resetMed();
+}));
+function fmtClock(s) { return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+function resetMed() { clearInterval(medTimer); medRunning = false; medLeft = medMins * 60; $("#medTimer").textContent = fmtClock(medLeft); $("#medToggle").textContent = "Begin meditation"; $("#medGuide").textContent = MED_GUIDES[0]; }
+function chime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine"; o.frequency.value = 528;
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.4);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 2.4);
+    o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 2.5);
+  } catch (e) {}
+}
+$("#medToggle").addEventListener("click", () => {
+  if (medRunning) { clearInterval(medTimer); medRunning = false; $("#medToggle").textContent = "Resume"; return; }
+  medRunning = true; $("#medToggle").textContent = "Pause";
+  let guideIdx = 0;
+  medTimer = setInterval(() => {
+    medLeft--;
+    $("#medTimer").textContent = fmtClock(Math.max(medLeft, 0));
+    if (medLeft % 30 === 0 && medLeft > 0) { guideIdx = (guideIdx + 1) % MED_GUIDES.length; $("#medGuide").textContent = MED_GUIDES[guideIdx]; }
+    if (medLeft <= 0) {
+      clearInterval(medTimer); medRunning = false; chime();
+      $("#medGuide").textContent = "Gently open your eyes. Carry this quiet with you.";
+      $("#medToggle").textContent = "Begin again";
+      logActivity("meditation", medMins); toast("Meditation complete · " + medMins + " mindful minutes logged 🧘");
+      medLeft = medMins * 60;
+    }
+  }, 1000);
+});
+$("#medReset").addEventListener("click", resetMed);
+
+/* Grounding */
+let groundIdx = 0;
+function renderGround() {
+  const box = $("#groundSteps"); const s = GROUND_STEPS[groundIdx];
+  box.innerHTML = '<div class="ground-step on"><div class="g-num">' + s.n + '</div><h3 style="font-size:19px;margin-top:6px">Name ' + s.num + " " + s.sense + '</h3><p class="muted" style="margin:6px 0 0">' + s.tip + "</p></div>";
+  $("#groundDots").innerHTML = GROUND_STEPS.map((_, i) => '<i class="' + (i <= groundIdx ? "on" : "") + '"></i>').join("");
+  $("#groundPrev").style.visibility = groundIdx === 0 ? "hidden" : "visible";
+  $("#groundNext").textContent = groundIdx === GROUND_STEPS.length - 1 ? "Finish 🌿" : "Next sense";
+}
+$("#groundNext").addEventListener("click", () => {
+  if (groundIdx === GROUND_STEPS.length - 1) { groundIdx = 0; renderGround(); logActivity("grounding", 2); toast("Grounded. Welcome back to the present moment 🌿"); return; }
+  groundIdx++; renderGround();
+});
+$("#groundPrev").addEventListener("click", () => { if (groundIdx > 0) { groundIdx--; renderGround(); } });
+
+/* Journal */
+let promptIdx = Math.floor(Math.random() * PROMPTS.length);
+function renderPrompt() { $("#journalPrompt").textContent = "“" + PROMPTS[promptIdx] + "”"; }
+$("#newPromptBtn").addEventListener("click", () => { promptIdx = (promptIdx + 1 + Math.floor(Math.random() * 3)) % PROMPTS.length; renderPrompt(); });
+$("#saveJournalBtn").addEventListener("click", () => {
+  const text = $("#journalText").value.trim();
+  if (!text) { toast("Write a line or two first — even one sentence counts."); return; }
+  state.journal.unshift({ prompt: PROMPTS[promptIdx], text, ts: Date.now() });
+  logActivity("journal", 3);
+  $("#journalText").value = "";
+  toast("Journal entry saved — just for you.");
+  renderJournal();
+});
+function renderJournal() {
+  const list = $("#journalList");
+  list.innerHTML = state.journal.slice(0, 5).map(j =>
+    '<div class="list-item"><span class="li-ic" style="background:var(--peach-soft);font-size:17px">✍️</span><div class="grow"><div class="small muted">' + new Date(j.ts).toLocaleString(undefined, { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) + ' · ' + esc(j.prompt) + '</div><div style="font-size:14.5px;margin-top:2px">' + esc(truncate(j.text, 160)) + "</div></div></div>"
+  ).join("");
+}
+
+/* ---------- Insights ---------- */
+function computeStreak() {
+  let streak = 0; const d = new Date();
+  const has = ds => state.moods.some(m => m.date === ds);
+  if (!has(todayStr(d))) d.setDate(d.getDate() - 1);
+  while (has(todayStr(d))) { streak++; d.setDate(d.getDate() - 1); }
+  return streak;
+}
+function renderInsights() {
+  const last7 = lastNDays(7).map(ds => state.moods.find(m => m.date === ds)).filter(Boolean);
+  const avg = last7.length ? last7.reduce((a, m) => a + m.score, 0) / last7.length : null;
+  $("#statAvg").textContent = avg === null ? "—" : avg.toFixed(1);
+  $("#statStreak").textContent = computeStreak();
+  $("#statCheckins").textContent = state.moods.length;
+  const mins = state.activities.reduce((a, x) => a + (x.minutes || 0), 0);
+  $("#statMinutes").textContent = mins;
+
+  const weekStart = Date.now() - 7 * 864e5;
+  const weekActs = state.activities.filter(a => a.ts > weekStart).length + last7.length;
+  const pct = Math.min(100, Math.round(weekActs / 5 * 100));
+  $("#goalBar").style.width = pct + "%";
+  $("#goalText").textContent = Math.min(weekActs, 5) + " of 5 this week";
+
+  // Personalised insights
+  const ins = [];
+  if (avg !== null) {
+    if (avg >= 7) ins.push({ ic: "🌤️", bg: "var(--green-soft)", t: "A steadier week", d: "Your average mood is " + avg.toFixed(1) + "/10 over the last 7 days. Whatever's been working — keep protecting it, and note it in your check-ins so future-you can find it again." });
+    else if (avg >= 5) ins.push({ ic: "🌥️", bg: "var(--blue-soft)", t: "Holding steady in the middle", d: "Your average mood is " + avg.toFixed(1) + "/10 this week — not bad, not bright. One small pleasure a day (a walk, a call, good music) often nudges the middle upward." });
+    else ins.push({ ic: "🌧️", bg: "var(--lav-soft)", t: "A heavier stretch — be extra gentle", d: "Your average mood is " + avg.toFixed(1) + "/10 this week. That's a real load. Prioritise sleep and one calming practice a day, and consider talking to someone you trust — or a professional — if this persists." });
+  } else {
+    ins.push({ ic: "🌱", bg: "var(--green-soft)", t: "Your insights grow with you", d: "Log a few daily check-ins and Solace will start spotting your patterns — best days, tough triggers, and what genuinely helps you." });
+  }
+  const tagCount = {};
+  state.moods.forEach(m => (m.tags || []).forEach(t => tagCount[t] = (tagCount[t] || 0) + 1));
+  const topTag = Object.keys(tagCount).sort((a, b) => tagCount[b] - tagCount[a])[0];
+  if (topTag) {
+    const withTag = state.moods.filter(m => (m.tags || []).includes(topTag));
+    const tAvg = withTag.reduce((a, m) => a + m.score, 0) / withTag.length;
+    ins.push({ ic: "🔎", bg: "var(--blue-soft)", t: "Pattern spotted: " + topTag, d: "“" + topTag + "” is your most-logged factor, and on those days your mood averages " + tAvg.toFixed(1) + "/10. Worth a gentle experiment: one small change around " + topTag.toLowerCase() + " this week, then watch the trend." });
+  }
+  const sleepMoods = state.moods.filter(m => (m.tags || []).includes("Sleep"));
+  if (sleepMoods.length >= 2) ins.push({ ic: "🌙", bg: "var(--lav-soft)", t: "Sleep keeps showing up", d: "You've tagged sleep in " + sleepMoods.length + " check-ins. A consistent wind-down — dim lights, the 4-7-8 breathing pattern, phone down 30 minutes before bed — is one of the highest-leverage changes for mood." });
+  if (mins >= 10) ins.push({ ic: "🧘", bg: "var(--green-soft)", t: "Your practice is adding up", d: "You've banked " + mins + " mindful minutes in Solace. Consistency beats intensity — short daily practices rewire stress responses more than rare long ones." });
+  if (state.settings.focus.length) ins.push({ ic: "🎯", bg: "var(--peach-soft)", t: "Your focus: " + state.settings.focus.join(" · "), d: "Because you chose " + state.settings.focus.join(" and ").toLowerCase() + " as focus areas, Solace will keep surfacing practices and prompts that support exactly that. Update them anytime in Profile." });
+  $("#insightList").innerHTML = ins.map(i => '<div class="rec"><span class="li-ic" style="background:' + i.bg + ';font-size:18px">' + i.ic + '</span><div class="grow"><strong style="font-size:14.5px">' + i.t + '</strong><div class="small muted" style="margin-top:2px;line-height:1.5">' + i.d + "</div></div></div>").join("");
+
+  // Milestones
+  const streak = computeStreak();
+  const miles = [
+    { ic: "🌱", t: "First check-in", d: "Log your very first mood", done: state.moods.length >= 1 },
+    { ic: "🔥", t: "3-day streak", d: "Check in three days in a row", done: streak >= 3 },
+    { ic: "📅", t: "One full week", d: "Reach a 7-day streak", done: streak >= 7 },
+    { ic: "🧘", t: "Mindful starter", d: "Complete any guided activity", done: state.activities.length >= 1 },
+    { ic: "⏱️", t: "30 mindful minutes", d: "Accumulate 30 minutes of practice", done: mins >= 30 },
+    { ic: "✍️", t: "Reflective writer", d: "Save 3 journal entries", done: state.journal.length >= 3 },
+    { ic: "💬", t: "Open heart", d: "Have 5 conversations with Solace", done: state.chat.filter(c => c.role === "me").length >= 5 }
+  ];
+  $("#mileList").innerHTML = miles.map(m => '<div class="mile' + (m.done ? "" : " locked") + '"><span class="m-ic" style="background:' + (m.done ? "var(--green-soft)" : "var(--surface-3)") + '">' + (m.done ? "✓" : m.ic) + '</span><div class="grow"><strong style="font-size:14.5px">' + m.t + '</strong><div class="small muted">' + m.d + '</div></div>' + (m.done ? '<span class="chip" style="background:var(--green-soft);border-color:transparent;color:var(--green);font-weight:700">Earned</span>' : "") + "</div>").join("");
+
+  // Daily report
+  const t = todayStr();
+  const tm = state.moods.find(m => m.date === t);
+  const tActs = state.activities.filter(a => todayStr(new Date(a.ts)) === t);
+  $("#reportDate").textContent = new Date().toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  const focusLine = state.settings.focus.length ? state.settings.focus.join(", ").toLowerCase() : "general wellbeing";
+  $("#dailyReport").innerHTML =
+    '<p style="margin:0 0 8px"><strong>Mood:</strong> ' + (tm ? moodMeta(tm.score).emoji + " " + moodMeta(tm.score).label + " (" + tm.score + "/10)" + (tm.note ? " — “" + esc(tm.note) + "”" : "") : "Not checked in yet today — it takes ten seconds on the Mood tab.") + "</p>" +
+    '<p style="margin:0 0 8px"><strong>Self-care today:</strong> ' + (tActs.length ? tActs.map(a => cap(a.type)).join(", ") + " · " + tActs.reduce((a, x) => a + (x.minutes || 0), 0) + " mindful minutes." : "No practices logged yet. Even 2 minutes of breathing counts.") + "</p>" +
+    '<p style="margin:0 0 8px"><strong>Streak:</strong> ' + streak + " day" + (streak === 1 ? "" : "s") + " · <strong>7-day average:</strong> " + (avg === null ? "—" : avg.toFixed(1) + "/10") + "</p>" +
+    '<p style="margin:0"><strong>Tomorrow\'s gentle intention:</strong> One small act for your ' + esc(focusLine) + " — " + (avg !== null && avg < 5 ? "start with rest and one breathing session before noon." : "keep the rhythm: check in, breathe, and note one good thing.") + "</p>";
+}
+$("#copyReportBtn").addEventListener("click", () => {
+  const text = "Solace AI — Daily Wellness Report (" + new Date().toLocaleDateString() + ")\n" + $("#dailyReport").innerText;
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => toast("Report copied — paste it anywhere to keep or share."));
+  else toast("Copy isn't available in this browser.");
+});
+
+/* ---------- Reminders / notifications ---------- */
+function bindSwitch(id, key) {
+  const el = $(id);
+  el.setAttribute("aria-checked", state.settings[key] ? "true" : "false");
+  el.addEventListener("click", () => { state.settings[key] = !state.settings[key]; el.setAttribute("aria-checked", state.settings[key] ? "true" : "false"); save(); renderAlerts(); });
+}
+function renderAlerts() {
+  $("#swMood").setAttribute("aria-checked", state.settings.remMood ? "true" : "false");
+  $("#swWind").setAttribute("aria-checked", state.settings.remWind ? "true" : "false");
+  $("#swWeekly").setAttribute("aria-checked", state.settings.remWeekly ? "true" : "false");
+  $("#remMoodTime").value = state.settings.remMoodTime;
+  $("#remWindTime").value = state.settings.remWindTime;
+  const perm = ("Notification" in window) ? Notification.permission : "unsupported";
+  $("#notifPermText").textContent = perm === "granted" ? "Browser notifications are on. Gentle reminders will find you." : perm === "denied" ? "Notifications are blocked in this browser — in-app reminders still work." : perm === "unsupported" ? "This browser doesn't support notifications — in-app reminders still work." : "Let Solace send gentle reminders in this browser.";
+  $("#bellDot").style.display = state.moods.some(m => m.date === todayStr()) ? "none" : "block";
+
+  const feed = [];
+  const checkedToday = state.moods.some(m => m.date === todayStr());
+  feed.push({ ic: "💙", bg: "var(--blue-soft)", t: checkedToday ? "Today's check-in is done ✓" : "Your daily check-in is waiting", d: checkedToday ? "You showed up for yourself today. That consistency is the whole practice." : "Ten seconds, one honest answer. Solace is ready when you are.", go: "mood", btn: checkedToday ? "View trends" : "Check in now" });
+  if (state.settings.remWind) feed.push({ ic: "🌙", bg: "var(--lav-soft)", t: "Wind-down at " + state.settings.remWindTime, d: "A few 4-7-8 breaths and a short journal line before bed — your future morning self says thanks.", go: "activities", btn: "Open activities" });
+  if (state.settings.remMood) feed.push({ ic: "🔔", bg: "var(--green-soft)", t: "Mood reminder set for " + state.settings.remMoodTime, d: "Every day at " + state.settings.remMoodTime + ", Solace will gently nudge you to check in.", go: null, btn: null });
+  if (state.settings.remWeekly) feed.push({ ic: "🗓️", bg: "var(--peach-soft)", t: "Sunday reflection is on", d: "End the week by reviewing your trends and insights — notice how far you've come.", go: "insights", btn: "See insights" });
+  const streak = computeStreak();
+  if (streak >= 2) feed.push({ ic: "🔥", bg: "var(--peach-soft)", t: streak + "-day streak — keep it alive", d: "You've checked in " + streak + " days running. One more today keeps the chain unbroken.", go: "mood", btn: "Check in" });
+  $("#notifFeed").innerHTML = feed.map(f =>
+    '<div class="notif-card"><span class="li-ic" style="background:' + f.bg + ';font-size:18px">' + f.ic + '</span><div class="grow"><strong style="font-size:14.5px">' + f.t + '</strong><div class="small muted" style="margin-top:2px;line-height:1.5">' + f.d + "</div>" + (f.btn ? '<button class="chip" style="margin-top:8px" data-go="' + f.go + '">' + f.btn + "</button>" : "") + "</div></div>"
+  ).join("");
+}
+$("#remMoodTime").addEventListener("change", e => { state.settings.remMoodTime = e.target.value || "09:00"; save(); renderAlerts(); });
+$("#remWindTime").addEventListener("change", e => { state.settings.remWindTime = e.target.value || "21:30"; save(); renderAlerts(); });
+$("#notifPermBtn").addEventListener("click", async () => {
+  if (!("Notification" in window)) { toast("This browser doesn't support notifications — in-app reminders still work."); return; }
+  try { await Notification.requestPermission(); } catch (e) {}
+  renderAlerts();
+});
+$("#testReminderBtn").addEventListener("click", () => {
+  const body = "Hey " + (state.settings.name || "friend") + " 🌿 This is your gentle nudge: take one slow breath, then check in with how you feel.";
+  if (("Notification" in window) && Notification.permission === "granted") { try { new Notification("Solace AI · Gentle reminder", { body }); } catch (e) {} }
+  toast(body);
+});
+
+/* ---------- Profile ---------- */
+function bindSimpleSwitch(id, key, after) {
+  const el = $(id);
+  el.setAttribute("aria-checked", state.settings[key] ? "true" : "false");
+  el.addEventListener("click", () => { state.settings[key] = !state.settings[key]; el.setAttribute("aria-checked", state.settings[key] ? "true" : "false"); save(); if (after) after(); });
+}
+function renderFocusTags() {
+  const box = $("#focusTags"); box.innerHTML = "";
+  FOCUS_AREAS.forEach(f => {
+    const on = state.settings.focus.includes(f);
+    const b = document.createElement("button");
+    b.className = "chip" + (on ? " on" : ""); b.textContent = f; b.setAttribute("aria-pressed", on ? "true" : "false");
+    b.addEventListener("click", () => {
+      if (on) state.settings.focus = state.settings.focus.filter(x => x !== f); else state.settings.focus.push(f);
+      save(); renderFocusTags();
+    });
+    box.appendChild(b);
+  });
+}
+function renderProfile() {
+  const name = state.settings.name || "Sasi";
+  $("#profileName").textContent = name;
+  $("#avatarInit").textContent = name.charAt(0).toUpperCase();
+  $("#nameInput").value = name;
+  $("#profileSince").textContent = "On your wellness journey since " + new Date(state.joined).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" }) + " · " + state.moods.length + " check-ins · " + state.activities.reduce((a, x) => a + (x.minutes || 0), 0) + " mindful minutes";
+  $("#chatStyle").value = state.settings.chatStyle;
+  $("#swAffirm").setAttribute("aria-checked", state.settings.affirm ? "true" : "false");
+  renderFocusTags();
+}
+$("#saveNameBtn").addEventListener("click", () => {
+  const v = $("#nameInput").value.trim();
+  if (!v) { toast("Please enter a name."); return; }
+  state.settings.name = v; save(); renderProfile(); renderHome();
+  toast("Nice to meet you, " + v + " 💙");
+});
+$("#chatStyle").addEventListener("change", e => { state.settings.chatStyle = e.target.value; save(); toast("Chat style updated."); });
+$("#exportBtn").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "solace-ai-my-data.json"; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast("Your data has been downloaded as JSON.");
+});
+$("#clearChatBtn").addEventListener("click", () => { state.chat = []; seedChat(); save(); renderChat(); toast("Chat history cleared. A fresh page."); });
+const dlg = $("#confirmDialog");
+$("#wipeBtn").addEventListener("click", () => { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); });
+$("#cancelWipe").addEventListener("click", () => { dlg.close(); dlg.removeAttribute("open"); });
+$("#confirmWipe").addEventListener("click", () => { dlg.close(); dlg.removeAttribute("open"); doWipe(); });
+function doWipe() {
+  localStorage.removeItem(LS_KEY);
+  state = defaultState(); seedChat(); save();
+  homeMood = null; selectedTags.clear();
+  applyTheme(); renderAll();
+  toast("Everything erased. A clean, calm start.");
+  go("home");
+}
+
+/* ---------- Init ---------- */
+function renderAll() { renderHome(); renderMood(); renderChat(); renderGround(); renderPrompt(); renderJournal(); renderInsights(); renderAlerts(); renderProfile(); }
+bindSwitch("#swMood", "remMood"); bindSwitch("#swWind", "remWind"); bindSwitch("#swWeekly", "remWeekly");
+bindSimpleSwitch("#swAffirm", "affirm", renderHome);
+seedChat();
+applyTheme();
+renderAll();
+renderPrompts();
+go("home");
+</script>
+</body>
+</html>
